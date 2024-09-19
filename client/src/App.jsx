@@ -41,7 +41,7 @@ function App() {
   const {socket} = useSelector(store=>store.socketio)
   useEffect(() => {
     if (user) {
-      const socketio = io(`${import.meta.env}`, {
+      const socketio = io(`${import.meta.env.VITE_APP}`, {
         query: {
           userId: user?._id,
         },
