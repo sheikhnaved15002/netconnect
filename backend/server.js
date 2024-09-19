@@ -34,7 +34,7 @@ app.use("/api/v1/message", messageRoute);
 app.get("/", (req, res) => {
   return res.json("hello from instgram clone");
 });
-
+console.log(process.env.URL)
 app.use("*", (req, res) => {
   return res.json("wrong route entered");
 });

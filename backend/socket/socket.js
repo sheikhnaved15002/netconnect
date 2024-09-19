@@ -12,6 +12,8 @@ const io = new Server(server,{
         methods:['GET','POST']
     }
 })
+console.log(process.env.URL)
+
 const userSocketMap = {};
 export const getRecieverSocketId = (recieverId)=> userSocketMap[recieverId]
 io.on('connection',(socket)=>{

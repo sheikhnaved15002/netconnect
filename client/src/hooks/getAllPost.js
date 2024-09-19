@@ -9,7 +9,7 @@ export const getAllPost = () => {
     const fetchAllPost = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/v1/post/allpost`,
+          `${import.meta.env.VITE_APP}/api/v1/post/allpost`,
           { withCredentials: true }
         );
         if (res?.data.success) {
