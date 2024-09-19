@@ -19,7 +19,7 @@ router.post("/login", loginController);
 router.get("/logout", isAuthenticated, logoutController);
 router.get("/profile/:id", isAuthenticated, getProfileController);
 router.post(
-  "/editprofile/:id",
+  "/editprofile",
   isAuthenticated,
   upload.single("profilePic"),
   editProfileController

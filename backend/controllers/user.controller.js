@@ -58,13 +58,14 @@ export const loginController = async (req, res) => {
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "1d",
+      expiresIn: "1d",
     });
 
     // populate each post if in the posts array
     const populatedPosts = await Promise.all(
       user.posts.map(async (postId) => {
         const post = await Post.findById(postId);
-        if (post.author.equals(user._id)) {
+        if (post?.author.equals(user._id)) {
           return post;
         }
         return null;
@@ -79,6 +80,7 @@ export const loginController = async (req, res) => {
       followers: user.followers,
       following: user.following,
       posts: populatedPosts,
+      bookmarks: user.bookmarks
     };
     return res
       .cookie("token", token, {
@@ -120,6 +122,8 @@ export const getProfileController = async (req, res) => {
     let user = await User.findById(userId)
       .populate({ path: "posts", createdAt: -1 })
       .populate("bookmarks");
+    user.password = undefined;
+    // console.log(user)
     return res.status(200).json({
       user,
       success: true,
@@ -133,7 +137,14 @@ export const editProfileController = async (req, res) => {
   try {
     const userId = req.id;
     const { bio, gender } = req.body;
+    
     const profilePicture = req.file;
+    console.log('bio',bio)
+    console.log('gender',gender)
+    console.log('profile',profilePicture)
+    // if(!bio || !gender || !profilePicture){
+    //   return sendResponse(res,400,'all fields are required',false)
+    // }
     let cloudResponse;
 
     if (profilePicture) {

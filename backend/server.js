@@ -7,12 +7,12 @@ import userRoute from "./routes/user.route.js";
 import postRoute from "./routes/post.route.js";
 import messageRoute from "./routes/message.route.js";
 import morgan from "morgan";
-// import { app, server } from "./socket/socket.js";
-import path from "path";
+import { app ,server} from "./socket/socket.js";
+// import path from "path";
 
 dotenv.config();
 
-const app = express();
+// const app = express();
 const PORT = process.env.PORT || 3000;
 
 // const __dirname = path.resolve();
@@ -31,16 +31,17 @@ app.use(cors(corsOptions));
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/post", postRoute);
 app.use("/api/v1/message", messageRoute);
+app.get("/", (req, res) => {
+  return res.json("hello from instgram clone");
+});
 
 app.use("*", (req, res) => {
   return res.json("wrong route entered");
 });
 
-app.use("/", (req, res) => {
-  return res.json("hello from instgram clone");
-});
 
-app.listen(PORT, () => {
+
+server.listen(PORT, () => {
   connectDB();
   console.log(`Server running at ${PORT}`);
 });

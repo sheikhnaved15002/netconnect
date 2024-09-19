@@ -6,14 +6,19 @@ import { Button } from "./button";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setPost } from "@/redux/postSlice";
 
 const CreatePost = ({ open, setOpen }) => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.auth);
   const imageRef = useRef();
   const [file, setFile] = useState(null);
   const [caption, setCaption] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [draft, setDraft] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { posts } = useSelector((store) => store.post);
 
   useEffect(() => {
     const savedFileUri = localStorage.getItem("fileuri");
@@ -21,8 +26,6 @@ const CreatePost = ({ open, setOpen }) => {
 
     if (savedFileUri) {
       setImagePreview(savedFileUri);
-      // The file should be set again after reloading.
-      // Consider using a prompt to select a file if it's not already selected
     }
     if (savedCaption) {
       setCaption(savedCaption);
@@ -99,7 +102,10 @@ const CreatePost = ({ open, setOpen }) => {
         }
       );
       if (res?.data.success) {
+        dispatch(setPost([res.data.post, ...posts]));
+
         toast.success(res.data.message);
+        setOpen(!open);
       }
     } catch (error) {
       console.log(error);
@@ -116,49 +122,57 @@ const CreatePost = ({ open, setOpen }) => {
           <LoaderCircle className="animate-spin text-white" size={48} />
         </div>
       )}
-      <Dialog open={open} onOpenChange={closeModalHandler}>
-        <DialogContent onInteractOutside={closeModalHandler}>
-          <DialogHeader className={"font-bold"}>Create new post</DialogHeader>
-          <div className="flex gap-3 items-center">
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="img" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="font-semibold text-xs">username</h1>
-              <span className="text-xs text-gray-600">bio here...</span>
+      <Dialog open={open} onOpenChange={closeModalHandler} >
+        <DialogContent onInteractOutside={closeModalHandler} className=''>
+          <DialogHeader className={"font-bold mt-5"}>Create new post</DialogHeader>
+          
+          {/* Add scrollable container with a max-height */}
+          <div className="overflow-y-auto max-h-[70vh] space-y-4">
+            <div className="flex gap-3 items-center">
+              <Avatar>
+                <AvatarImage src={user?.profilePicture} alt="img" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <div>
+                <h1 className="font-semibold text-xs">{user?.username}</h1>
+                <span className="text-xs text-gray-600">bio here...</span>
+              </div>
+            </div>
+            <Textarea
+              placeholder="Write caption here.."
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              className="focus-visible:ring-transparent"
+            />
+            <div className="text-center">
+            <input
+              name="image"
+              accept="image/*"
+              ref={imageRef}
+              type="file"
+              className="hidden"
+              onChange={imageFileHandler}
+            />
+            <Button
+              onClick={() => imageRef.current.click()}
+              className="w-fit mx-auto "
+            >
+              Select from computer
+            </Button>
+            </div>
+            <div className="flex justify-center">
+              {imagePreview && (
+                <img
+                  src={imagePreview}
+                  alt="Selected Preview"
+                  className="w-50 h-50 object-contain rounded "
+                />
+              )}
             </div>
           </div>
-          <Textarea
-            placeholder="Write caption here.."
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            className="border-none focus-visible:ring-transparent"
-          />
-          <input
-            name="image"
-            accept="image/*"
-            ref={imageRef}
-            type="file"
-            className="hidden"
-            onChange={imageFileHandler}
-          />
-          <Button
-            onClick={() => imageRef.current.click()}
-            className="w-fit mx-auto"
-          >
-            Select from computer
-          </Button>
-          <div className="mx-auto">
-            {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Selected Preview"
-                className="w-64 h-64 object-contain rounded"
-              />
-            )}
-          </div>
-          <div className="mx-auto flex gap-5">
+
+          {/* Buttons at the bottom */}
+          <div className="mx-auto flex gap-5 mt-4">
             {file && <Button onClick={draftHandler}>Save as draft</Button>}
             {draft && (
               <Button variant={"destructive"} onClick={removeDraftHandler}>
@@ -166,7 +180,7 @@ const CreatePost = ({ open, setOpen }) => {
               </Button>
             )}
           </div>
-          <Button onClick={createPostHandler}>
+          <Button onClick={createPostHandler} className='mb-5'>
             {loading ? <LoaderCircle className="animate-spin" /> : "Post"}
           </Button>
         </DialogContent>

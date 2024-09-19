@@ -5,8 +5,8 @@ import { setAuthUser } from "@/redux/authSlice";
 import axios from "axios";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -52,13 +52,19 @@ const Login = () => {
       setLoad(false);
     }
   };
+  const{user} = useSelector(store=>store.auth)
+  useEffect(()=>{
+    if(user){
+      navigate('/')
+    }
+  },)
   return (
     <div className="h-screen w-screen flex justify-center items-center bg-gray-50">
       <div className=" w-full max-w-md shadow-xl hover:shadow-2xl p-8 flex flex-col gap-5 m-5">
         <form onSubmit={handleSigninSubmit} className="">
           <div className="my-4 text-center">
-            <h1 className="text-xl font-bold">logo</h1>
-            <p className="text-sm">Login</p>
+            <img className="mx-auto " src="/netconnect.png" />
+            <p className="text-md font-bold">Login </p>
           </div>
           <div>
             <div>
@@ -67,7 +73,7 @@ const Login = () => {
                 name="email"
                 value={input.email}
                 onChange={onChangeHandler}
-                className="my-1"
+                className="my-1 focus-visible:ring-transparent"
                 type="email"
                 placeholder="Enter email"
                 required
@@ -79,9 +85,9 @@ const Login = () => {
               <div className="relative">
                 <Input
                   name="password"
-                  value={input.password}
+                  value={input.password}  
                   onChange={onChangeHandler}
-                  className="my-1"
+                  className="my-1 focus-visible:ring-transparent"
                   type={eye ? "text" : "password"}
                   placeholder="Enter password"
                   required

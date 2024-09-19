@@ -3,6 +3,7 @@ import cloudinary from "../utils/cloudinary.js";
 import { Post } from "../models/post.model.js";
 import { User } from "../models/user.model.js";
 import { Comment } from "../models/comment.model.js";
+import { getRecieverSocketId, io } from "../socket/socket.js";
 
 export const addNewPostController = async (req, res) => {
   try {
@@ -60,7 +61,7 @@ export const getAllPostController = async (req, res) => {
         },
       });
     return res.status(200).json({
-      posts,
+      message:"All post fetched",
       success: true,
       posts,
     });
@@ -112,6 +113,19 @@ export const likePostController = async (req, res) => {
     const user = await User.findById(likeKrneWalaUserKiId).select(
       "username profilePicture"
     );
+    const postOwnerId = post.author.toString();
+    if(postOwnerId !== likeKrneWalaUserKiId){
+      const notification = {
+        type: 'like',
+        userId: likeKrneWalaUserKiId,
+        userDetails: user,
+        postId,
+        message: "You post was liked"
+      }
+
+    const postOwnerSocketId = getRecieverSocketId(postOwnerId);
+    io.to(postOwnerSocketId).emit('notification',notification);
+  }
 
     return res.status(200).json({ message: "Post liked", success: true });
   } catch (error) {}
@@ -143,9 +157,9 @@ export const dislikePostController = async (req, res) => {
         userId: likeKrneWalaUserKiId,
         userDetails: user,
         postId,
-        message: "Your post was liked",
+        message: "Your post was disliked",
       };
-      const postOwnerSocketId = getReceiverSocketId(postOwnerId);
+      const postOwnerSocketId = getRecieverSocketId(postOwnerId);
       io.to(postOwnerSocketId).emit("notification", notification);
     }
 
@@ -240,6 +254,7 @@ export const deletePostController = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Post deleted",
+
     });
   } catch (error) {
     console.log(error);
@@ -256,7 +271,7 @@ export const bookmarkPostController = async (req, res) => {
         .status(404)
         .json({ message: "Post not found", success: false });
 
-    const user = await User.findById(authorId);
+  const user = await User.findById(authorId);
     if (user.bookmarks.includes(post._id)) {
       // already bookmarked -> remove from the bookmark
       await user.updateOne({ $pull: { bookmarks: post._id } });

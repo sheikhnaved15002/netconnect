@@ -7,15 +7,20 @@ export const getAllPost = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchAllPost = async () => {
-      const res = await axios.get(
-        `${import.meta.env.VITE_APP}/api/v1/post/allpost`,
-        { withCredentials: true }
-      );
-      if (res?.data.success) {
-        dispatch(setPost(res.data.posts));
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/v1/post/allpost`,
+          { withCredentials: true }
+        );
+        if (res?.data.success) {
+          dispatch(setPost(res.data.posts));
+          // console.log(res.data.posts);
+        }
+      } catch (error) {
+        console.log(error);
       }
-      console.log(res.data.posts);
     };
     fetchAllPost();
   }, []);
 };
+export default getAllPost;
