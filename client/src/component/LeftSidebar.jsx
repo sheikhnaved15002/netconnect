@@ -7,6 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { setAuthUser } from "@/redux/authSlice";
+import { setPost, setSelectedPost } from "@/redux/postSlice";
 import { clearNotification, setLikeNotification } from "@/redux/rtnSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import axios from "axios";
@@ -65,8 +66,10 @@ const LeftSidebar = () => {
       );
       if (res?.data.success) {
         dispatch(setAuthUser(null));
-        toast.success(res?.data.message);
+        dispatch(setSelectedPost(null));
+        dispatch(setPost([]));
         navigate("/login");
+        toast.success(res.data.message);
       }
     } catch (error) {
       toast.error(error.response.data.message);

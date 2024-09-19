@@ -57,7 +57,7 @@ const Login = () => {
     if(user){
       navigate('/')
     }
-  },)
+  },[user,navigate])
   return (
     <div className="h-screen w-screen flex justify-center items-center bg-gray-50">
       <div className=" w-full max-w-md shadow-xl hover:shadow-2xl p-8 flex flex-col gap-5 m-5">

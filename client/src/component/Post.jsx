@@ -37,10 +37,10 @@ const Post = ({ post }) => {
   const { user } = useSelector((store) => store.auth);
   const [totalLike, setTotalLike] = useState(post.likes.length);
   const dispatch = useDispatch();
-  const [like, setLike] = useState(post.likes.includes(user?._id) || false);
-  const [checkBookmark, setCheckBookmart] = useState(
-    user.bookmarks.includes(post._id || false)
-  );
+  const [like, setLike] = useState(post.likes.includes(user && user?._id) || false);
+  // const [checkBookmark, setCheckBookmart] = useState(
+  //   user?.bookmarks?.includes(post?._id || false)
+  // );
   const handleDeletePost = async (id) => {
     try {
       const res = await axios.delete(
@@ -76,11 +76,11 @@ const Post = ({ post }) => {
         setTotalLike(updatedLikes);
         setLike(!like);
         const updatedPost = posts.map((p) =>
-          p._id === id
+          p?._id === id
             ? {
                 ...p,
                 likes: like
-                  ? p.likes.filter((id) => id !== user._id)
+                  ? p?.likes.filter((id) => id !== user._id)
                   : [...p.likes, user._id],
               }
             : p
@@ -111,7 +111,7 @@ const Post = ({ post }) => {
         const updateCommentData = [res.data.comment, ...comment];
         setComment(updateCommentData);
         const updatedPostData = posts.map((p) =>
-          p._id === id ? { ...p, comments: updateCommentData } : p
+          p?._id === id ? { ...p, comments: updateCommentData } : p
         );
         dispatch(setPost(updatedPostData));
         setText("");
@@ -125,28 +125,11 @@ const Post = ({ post }) => {
   const handleBookmark = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_APP}/api/v1/post/bookmark/${post._id}`,
+        `${import.meta.env.VITE_APP}/api/v1/post/bookmark/${post?._id}`,
         { withCredentials: true }
       );
-
-      if (res.data.type == "saved") {
-        const updatedUser = {
-          ...user,
-          bookmarks: [...user.bookmarks, post._id], // Create a new array by adding the post ID
-        };
-        dispatch(setAuthUser(updatedUser));
+      if(res.data.success){
         toast.success(res.data.message);
-        setCheckBookmart(updatedUser.bookmarks.includes(post._id));
-      } else if (res.data.type == "unsaved") {
-        const updatedUser = {
-          ...user,
-          bookmarks: user.bookmarks.filter(
-            (bookmarkId) => bookmarkId !== post._id
-          ), // Use correct filter condition
-        };
-        dispatch(setAuthUser(updatedUser));
-        toast.success(res.data.message);
-        setCheckBookmart(updatedUser.bookmarks.includes(post._id));
       }
     } catch (error) {
       console.log(error.response);
@@ -234,7 +217,7 @@ const Post = ({ post }) => {
           <Send className="cursor-pointer hover:text-gray-600" />
         </div>
         <div className="flex gap-5 cursor-pointer" onClick={handleBookmark}>
-          {checkBookmark ? <BookmarkCheck /> : <Bookmark />}
+          <Bookmark/>
         </div>
       </div>
       <span className="font-medium mb-2 block">{totalLike} likes</span>
@@ -262,7 +245,7 @@ const Post = ({ post }) => {
         {text.trim() !== "" ? (
           <span
             className="cursor-pointer hover:bg-black hover:text-white p-2 rounded-md border-black border-2 "
-            onClick={() => addCommentHandler(post._id)}
+            onClick={() => addCommentHandler(post?._id)}
           >
             post
           </span>
