@@ -15,7 +15,7 @@ const Login = () => {
   // const location = useLocation();
   const [eye, setEye] = useState(false);
   // console.log(location.state);
-  const [input, setInput] = useState({ username: "", email: "" });
+  const [input, setInput] = useState({ password: "", email: "" });
   const [load, setLoad] = useState(false);
   const onChangeHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
