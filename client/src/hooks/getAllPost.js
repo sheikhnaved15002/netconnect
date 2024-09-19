@@ -10,7 +10,7 @@ export const getAllPost = () => {
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_APP}/api/v1/post/allpost`,
-          { withCredentials: true }
+          {withCredentials:true}
         );
         if (res?.data.success) {
           dispatch(setPost(res.data.posts));

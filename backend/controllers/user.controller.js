@@ -65,7 +65,7 @@ export const loginController = async (req, res) => {
     const populatedPosts = await Promise.all(
       user.posts.map(async (postId) => {
         const post = await Post.findById(postId);
-        if (post?.author.equals(user._id)) {
+        if (post && post?.author.equals(user._id)) {
           return post;
         }
         return null;
@@ -80,13 +80,14 @@ export const loginController = async (req, res) => {
       followers: user.followers,
       following: user.following,
       posts: populatedPosts,
-      bookmarks: user.bookmarks
+      bookmarks: user.bookmarks,
     };
     return res
       .cookie("token", token, {
         httpOnly: true,
         sameSite: "strict",
         maxAge: 1 * 24 * 60 * 60 * 1000,
+        secure: true,
       })
       .json({
         message: `Welcome back ${user.username}`,
@@ -137,11 +138,11 @@ export const editProfileController = async (req, res) => {
   try {
     const userId = req.id;
     const { bio, gender } = req.body;
-    
+
     const profilePicture = req.file;
-    console.log('bio',bio)
-    console.log('gender',gender)
-    console.log('profile',profilePicture)
+    console.log("bio", bio);
+    console.log("gender", gender);
+    console.log("profile", profilePicture);
     // if(!bio || !gender || !profilePicture){
     //   return sendResponse(res,400,'all fields are required',false)
     // }
