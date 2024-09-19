@@ -41,7 +41,7 @@ function App() {
   const {socket} = useSelector(store=>store.socketio)
   useEffect(() => {
     if (user) {
-      const socketio = io("http://localhost:8080", {
+      const socketio = io(`${import.meta.env}`, {
         query: {
           userId: user?._id,
         },
