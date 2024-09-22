@@ -8,6 +8,7 @@ import postRoute from "./routes/post.route.js";
 import messageRoute from "./routes/message.route.js";
 import morgan from "morgan";
 import { app ,server} from "./socket/socket.js";
+import isAuthenticated from "./middlewares/isAuthenticated.js";
 // import path from "path";
 
 dotenv.config();
@@ -31,6 +32,12 @@ app.use(cors(corsOptions));
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/post", postRoute);
 app.use("/api/v1/message", messageRoute);
+app.get('/protected-route',isAuthenticated,(req,res)=>{
+  return res.status(200).send({
+    message:"sucess",
+    success: true
+  })
+})
 app.get("/", (req, res) => {
   return res.json("hello from instgram clone");
 });

@@ -12,10 +12,11 @@ import { toast } from "sonner";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   // const location = useLocation();
   const [eye, setEye] = useState(false);
   // console.log(location.state);
-  const [input, setInput] = useState({ password: "", email: "" });
+  const [input, setInput] = useState({ password:'',email:'' });
   const [load, setLoad] = useState(false);
   const onChangeHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -53,6 +54,12 @@ const Login = () => {
     }
   };
   const{user} = useSelector(store=>store.auth)
+  useEffect(()=>{
+    if(location.state){
+      setInput({...input,password:location.state.password})
+      setInput({...input,email:location.state.email})
+    }
+  },[location.state])
   useEffect(()=>{
     if(user){
       navigate('/')

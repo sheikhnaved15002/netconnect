@@ -40,7 +40,7 @@ const Signup = () => {
       if (res?.data.success) {
         toast.success(res?.data.message);
         setInput({ username: "", email: "", password: "" });
-        navigate("/login");
+        navigate("/login",{state:{email:input.email,password:input.password}});
       } else {
         toast.error(res?.data.message);
       }

@@ -32,7 +32,10 @@ const LeftSidebar = () => {
     (store) => store.realtimenotification
   );
   const sidebarItem = [
-    {icon:<img className="w-8 h-8" src="/netconnect.png" alt="logo"/>,name:'NETCONNECT'},
+    {
+      icon: <img className="w-8 h-8" src="/netconnect.png" alt="logo" />,
+      name: "NETCONNECT",
+    },
     { icon: <Home />, name: "Home" },
     { icon: <Search />, name: "Search" },
     { icon: <TrendingUp />, name: "Explore" },
@@ -73,6 +76,10 @@ const LeftSidebar = () => {
       }
     } catch (error) {
       toast.error(error.response.data.message);
+      dispatch(setAuthUser(null));
+      dispatch(setSelectedPost(null));
+      dispatch(setPost([]));
+      navigate("/login");
     }
   };
 
@@ -83,7 +90,7 @@ const LeftSidebar = () => {
       setOpen(true);
     } else if (item === "Profile") {
       navigate(`/profile/${user?._id}`);
-    } else if (item === "Home" || item==='NETCONNECT') {
+    } else if (item === "Home" || item === "NETCONNECT") {
       navigate("/");
     } else if (item === "Messages") {
       navigate("/chat");
@@ -96,9 +103,7 @@ const LeftSidebar = () => {
         <h1 className="cursor-pointer " onClick={() => navigate("/")}></h1>
         {/* Sidebar content */}
         <div className="flex flex-col flex-grow overflow-y-auto">
-          
           {sidebarItem.map((item) => (
-           
             <div
               onClick={() => sideBarHandler(item.name)}
               key={item.name}
@@ -108,16 +113,23 @@ const LeftSidebar = () => {
               <span className="block">{item.icon}</span>
               {/* Show text only on lg and xl screens */}
               <span className="hidden lg:block xl:w-auto whitespace-nowrap overflow-hidden text-ellipsis">
-                {item.name==='NETCONNECT'?<h1 className="font-semibold hover:scale-75 transition-all ease-out duration-500 hover:font-extrabold">{item.name}</h1>:item.name}
+                {item.name === "NETCONNECT" ? (
+                  <h1 className="font-semibold hover:scale-75 transition-all ease-out duration-500 hover:font-extrabold">
+                    {item.name}
+                  </h1>
+                ) : (
+                  item.name
+                )}
               </span>
               {item.name === "Notifications" &&
                 likeNotification?.length > 0 && (
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button className="rounded-full h-5 w-5 bg-red-600 hover:bg-red-600 absolute bottom-6 left-6">{likeNotification.length}</Button>
+                      <Button className="rounded-full h-5 w-5 bg-red-600 hover:bg-red-600 absolute bottom-6 left-6">
+                        {likeNotification.length}
+                      </Button>
                     </PopoverTrigger>
                     <PopoverContent>
-
                       <div>
                         {likeNotification.length === 0 ? (
                           <p>No new notification</p>
@@ -130,7 +142,7 @@ const LeftSidebar = () => {
                               >
                                 <Avatar>
                                   <AvatarImage
-                                  className="w-6 h-6"
+                                    className="w-6 h-6"
                                     src={
                                       notification.userDetails?.profilePicture
                                     }
@@ -148,17 +160,16 @@ const LeftSidebar = () => {
                           })
                         )}
                       </div>
-                      <div className="flex justify-end cursor-pointer" onClick={()=>dispatch(clearNotification())}>
-                     <Badge>
-                        mark as read
-                      </Badge>
-                     </div>
+                      <div
+                        className="flex justify-end cursor-pointer"
+                        onClick={() => dispatch(clearNotification())}
+                      >
+                        <Badge>mark as read</Badge>
+                      </div>
                     </PopoverContent>
                   </Popover>
                 )}
-                
             </div>
-            
           ))}
         </div>
       </div>
