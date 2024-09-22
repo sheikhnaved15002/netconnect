@@ -68,10 +68,10 @@ const LeftSidebar = () => {
         { withCredentials: true }
       );
       if (res?.data.success) {
+        navigate("/login",{state:{email:user.email}});
         dispatch(setAuthUser(null));
         dispatch(setSelectedPost(null));
         dispatch(setPost([]));
-        navigate("/login");
         toast.success(res.data.message);
       }
     } catch (error) {
