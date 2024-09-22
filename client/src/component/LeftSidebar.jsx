@@ -27,6 +27,7 @@ import { toast } from "sonner";
 
 const LeftSidebar = () => {
   const { user } = useSelector((store) => store.auth);
+  const [userEmail] = useState(user?.email)
   const [open, setOpen] = useState(false);
   const { likeNotification } = useSelector(
     (store) => store.realtimenotification
@@ -68,7 +69,8 @@ const LeftSidebar = () => {
         { withCredentials: true }
       );
       if (res?.data.success) {
-        navigate("/login",{state:{email:user.email}});
+        // const userEmail = user.email;
+        navigate("/login",{state:{email:userEmail}});
         dispatch(setAuthUser(null));
         dispatch(setSelectedPost(null));
         dispatch(setPost([]));
