@@ -56,8 +56,11 @@ const Login = () => {
   const{user} = useSelector(store=>store.auth)
   useEffect(()=>{
     if(location.state){
-      setInput({...input,password:location.state.password})
-      setInput({...input,email:location.state.email})
+      setInput({
+        password: location.state.password,
+        email: location.state.email
+      })
+      
     }
   },[location.state])
   useEffect(()=>{
