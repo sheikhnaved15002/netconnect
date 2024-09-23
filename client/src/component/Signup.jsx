@@ -112,7 +112,7 @@ const Signup = () => {
               </div>
             </div>
             <Button className="w-full mt-5" variant="">
-              {load ? <LoaderCircle onLoad={() => setLoad(true)} /> : "Signup"}
+              {load ? <LoaderCircle className="animate-spin" onLoad={() => setLoad(true)} /> : "Signup"}
             </Button>
           </div>
         </form>

@@ -1,3 +1,56 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Add this to your CSS file or a styled component */
+
+/* styles.css */
+/* styles.css */
+@media (max-width: 600px) {
+  .sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    display: none;
+  }
+
+  .sidebar-content {
+    display: none; /* Keep it visible for larger screens */
+  }
+
+  .bottom-icons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: white; /* or your desired background color */
+    border-top: 1px solid #ccc; /* optional border */
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .bottom-icons span {
+    flex-direction: column;
+    text-align: center;
+    font-size: 0.75rem; /* smaller text for bottom icons */
+  }
+
+  .bottom-icons img {
+    width: 24px; /* Adjust size as needed */
+    height: 24px;
+  }
+
+  .netconnect {
+    display: none; /* Hide the NETCONNECT icon and text */
+  }
+  .home-page {
+    /* background-color: black; */
+  }
+  /* styles.css */
+  .full-width {
+    width: 100%; /* Ensure full width when sidebar is hidden */
+    margin-left: 0; /* Remove any left margin if applicable */
+  }
+}
